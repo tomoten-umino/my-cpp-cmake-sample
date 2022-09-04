@@ -65,6 +65,10 @@ make examples
 make clean
 # install
 make install
+# run cpplint
+make cpplint
+# run metrix++
+make metrix++
 ```
 
 ### cmake options
