@@ -68,7 +68,7 @@ jobs:
       - name: cat result
         id: cat_result
         run: |
-          text=$(cat max_indent_error.txt)
+          text=`cat max_indent_error.txt`
           text="${text//'%'/'%25'}"
           text="${text//$'\n'/'%0A'}"
           text="${text//$'\r'/'%0D'}" 
