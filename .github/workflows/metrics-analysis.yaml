@@ -54,6 +54,6 @@ jobs:
           metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:maxindent:4
       
       - name: check max cyclomatic
-        if: steps.metrics_analysis.outcome == 'success'
+        if: steps.metrics_analysis.outcome == 'success' && ( success() || failure() )
         run: |
           metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10
