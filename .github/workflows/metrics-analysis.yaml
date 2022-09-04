@@ -29,14 +29,13 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: cmake and metrics analysis
+      - name: metrics analysis
         run: |
-          mkdir build
-          cd build
-          cmake ..
-          make metrixpp
-
-      - name: display result
-        run: |
-          cat build/max_cyclomatic_error.txt
-          cat build/max_indent_error.txt
+          metrix++ collect --log-level=WARNING \
+          --std.code.lines.code \
+          --std.code.complexity.maxindent \
+          --std.code.complexity.cyclomatic \
+          --exclude-files=CMakeCXXCompilerId.cpp \
+          --db-file=metrixpp.db \
+          $(git diff ${{ github.head_ref }} ${{ github.base_ref }} )
+          
