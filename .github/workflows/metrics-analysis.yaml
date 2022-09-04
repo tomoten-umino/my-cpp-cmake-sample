@@ -36,10 +36,6 @@ jobs:
         if: ${{ success() }}
         run: |
           pip install -r requirements.txt
-          
-      - name: echo
-        run: |
-          echo $(git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }} --name-only)
 
       - name: metrics analysis
         run: |
@@ -50,4 +46,11 @@ jobs:
           --exclude-files=CMakeCXXCompilerId.cpp \
           --db-file=metrixpp.db \
           $(git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }} --name-only)
-          
+
+      - name: check max indent
+        run: | 
+          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:maxindent:4 | tee max_indent_error.txt
+      
+      - name: check max cyclomatic
+        run: |
+          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10 | tee max_cyclomatic_error.txt
