@@ -19,11 +19,11 @@ jobs:
           apt-get update
           apt-get -y install python3-pip wget tar gzip
 
-      - name: install github-comment
-        run: |
-          wget https://github.com/suzuki-shunsuke/github-comment/releases/download/v4.5.0/github-comment_4.5.0_linux_amd64.tar.gz
-          tar xzvf github-comment_4.5.0_linux_amd64.tar.gz 
-          mv github-comment /usr/local/bin
+#      - name: install github-comment
+#        run: |
+#          wget https://github.com/suzuki-shunsuke/github-comment/releases/download/v4.5.0/github-comment_4.5.0_linux_amd64.tar.gz
+#          tar xzvf github-comment_4.5.0_linux_amd64.tar.gz 
+#          mv github-comment /usr/local/bin
 
       - name: checkout code
         uses: actions/checkout@v3
@@ -58,9 +58,22 @@ jobs:
         id: check_max_indent
         if: steps.metrics_analysis.outcome == 'success'
         run: | 
-          github-comment exec -- metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:maxindent:4
+          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:maxindent:4 | tee max_indent_error.txt 
       
       - name: check max cyclomatic
         if: steps.metrics_analysis.outcome == 'success' && ( success() || failure() )
         run: |
-          github-comment exec -- metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10
+          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10 | tee max_cyclomatic_error.txt
+
+      - name: cat result
+        id: cat_result
+        run: |
+          cat max_indent_error.txt
+          echo "::set-output name=message_body::$(cat max_indent_error.txt)"
+          
+      - name: comment pr
+        uses: github-actions-up-and-running/pr-comment@v1.0.1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          message: ${{ steps.cat_result.outputs.message_body }}
+     
