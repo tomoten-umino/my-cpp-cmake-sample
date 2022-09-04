@@ -43,7 +43,7 @@ jobs:
 
       - name: metrics analysis
         run: |
-          metrix++ collect --log-level=WARNING \
+          metrix++ collect --log-level=INFO \
           --std.code.lines.code \
           --std.code.complexity.maxindent \
           --std.code.complexity.cyclomatic \
