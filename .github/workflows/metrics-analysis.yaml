@@ -17,13 +17,7 @@ jobs:
       - name: update container package
         run: |
           apt-get update
-          apt-get -y install python3-pip wget tar gzip
-
-#      - name: install github-comment
-#        run: |
-#          wget https://github.com/suzuki-shunsuke/github-comment/releases/download/v4.5.0/github-comment_4.5.0_linux_amd64.tar.gz
-#          tar xzvf github-comment_4.5.0_linux_amd64.tar.gz 
-#          mv github-comment /usr/local/bin
+          apt-get -y install python3-pip
 
       - name: checkout code
         uses: actions/checkout@v3
@@ -71,10 +65,6 @@ jobs:
           sed -i -z 's/\n/%0A/g' max_indent_error.txt
           text=`cat max_indent_error.txt`
           echo "::set-output name=message_body::$text"
-#          text="${text//'%'/'%25'}"
-#          text="${text//$'\n'/'%0A'}"
-#          text="${text//$'\r'/'%0D'}" 
-#          echo "::set-output name=message_body::$text"
           
       - name: comment pr
         uses: github-actions-up-and-running/pr-comment@v1.0.1
