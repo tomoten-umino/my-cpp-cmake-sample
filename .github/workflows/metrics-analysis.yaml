@@ -38,6 +38,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: metrics analysis
+        id: metrics_analysis
         run: |
           metrix++ collect --log-level=INFO \
           --std.code.lines.code \
@@ -48,9 +49,11 @@ jobs:
           $(git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }} --name-only)
 
       - name: check max indent
+        if: steps.metrics_analysis.outcome == 'success'
         run: | 
-          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:maxindent:4 | tee max_indent_error.txt
+          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:maxindent:4
       
       - name: check max cyclomatic
+        if: steps.metrics_analysis.outcome == 'success'
         run: |
-          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10 | tee max_cyclomatic_error.txt
+          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10
