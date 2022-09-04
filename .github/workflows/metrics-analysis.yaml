@@ -71,18 +71,3 @@ jobs:
         if: steps.metrics_analysis.outcome == 'success' && ( success() || failure() )
         run: |
           metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10
-
-      - name: "Post Comment"
-        uses: actions/github-script@v3
-        env:
-          MESSAGE: |
-            $(cat )
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: process.env.MESSAGE
-            })
