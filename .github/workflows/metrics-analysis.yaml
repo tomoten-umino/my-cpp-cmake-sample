@@ -36,3 +36,7 @@ jobs:
           cmake ..
           make metrixpp
 
+      - name: display result
+        run: |
+          cat max_cyclomatic_error.txt
+          cat max_indent_error.txt
