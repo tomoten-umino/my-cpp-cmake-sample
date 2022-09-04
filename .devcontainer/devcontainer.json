@@ -18,7 +18,8 @@
 			"extensions": [
 				"ms-vscode.cpptools",
 				"ms-vscode.cmake-tools",
-				"janisdd.vscode-edit-csv"
+				"janisdd.vscode-edit-csv",
+				"OmarTawfik.github-actions-vscode"
 			]
 		}
 	},

@@ -1,4 +1,4 @@
-name metrics-analysis
+name: metrics-analysis
 
 on:
   workflow_dispach:
