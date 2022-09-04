@@ -39,11 +39,18 @@ jobs:
 
       - name: metrics analysis
         run: |
-          metrix++ collect --log-level=WARNING \
+          metrix++ collect --log-level=INFO \
           --std.code.lines.code \
           --std.code.complexity.maxindent \
           --std.code.complexity.cyclomatic \
           --exclude-files=CMakeCXXCompilerId.cpp \
           --db-file=metrixpp.db \
-          $(git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }} )
-          
+          $(git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }} --name-only)
+
+      - name: check max indent
+        run: | 
+          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:maxindent:4 | tee max_indent_error.txt
+      
+      - name: check max cyclomatic
+        run: |
+          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10 | tee max_cyclomatic_error.txt
