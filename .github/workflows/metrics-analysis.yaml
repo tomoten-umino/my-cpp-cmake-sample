@@ -69,10 +69,11 @@ jobs:
         id: cat_result
         run: |
           text=`cat max_indent_error.txt`
-          text="${text//'%'/'%25'}"
-          text="${text//$'\n'/'%0A'}"
-          text="${text//$'\r'/'%0D'}" 
           echo "::set-output name=message_body::$text"
+#          text="${text//'%'/'%25'}"
+#          text="${text//$'\n'/'%0A'}"
+#          text="${text//$'\r'/'%0D'}" 
+#          echo "::set-output name=message_body::$text"
           
       - name: comment pr
         uses: github-actions-up-and-running/pr-comment@v1.0.1
