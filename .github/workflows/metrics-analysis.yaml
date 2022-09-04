@@ -28,3 +28,11 @@ jobs:
         if: ${{ success() }}
         run: |
           pip install -r requirements.txt
+
+      - name: cmake and metrics analysis
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make metrixpp
+
