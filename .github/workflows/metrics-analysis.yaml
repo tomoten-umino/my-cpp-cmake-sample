@@ -45,5 +45,5 @@ jobs:
           --std.code.complexity.cyclomatic \
           --exclude-files=CMakeCXXCompilerId.cpp \
           --db-file=metrixpp.db \
-          $(git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }} )
+          `git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }}`
           
