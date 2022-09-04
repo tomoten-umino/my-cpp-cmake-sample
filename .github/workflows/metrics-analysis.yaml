@@ -36,6 +36,10 @@ jobs:
         if: ${{ success() }}
         run: |
           pip install -r requirements.txt
+          
+      - name: echo
+        run: |
+          echo `git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }}`
 
       - name: metrics analysis
         run: |
