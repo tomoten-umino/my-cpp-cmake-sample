@@ -10,7 +10,7 @@ on:
 
 jobs:
   metrics-analysis:
-    runs-on: ubuntu:22:04
+    runs-on: ubuntu:22.04
     container:
       image: mcr.microsoft.com/vscode/devcontainers/cpp:0-bullseye
     
