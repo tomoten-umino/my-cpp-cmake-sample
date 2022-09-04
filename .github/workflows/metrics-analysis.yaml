@@ -39,7 +39,7 @@ jobs:
           
       - name: echo
         run: |
-          echo `git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }}`
+          echo $(git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }} --name-only)
 
       - name: metrics analysis
         run: |
@@ -49,5 +49,5 @@ jobs:
           --std.code.complexity.cyclomatic \
           --exclude-files=CMakeCXXCompilerId.cpp \
           --db-file=metrixpp.db \
-          `git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }}`
+          $(git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }} --name-only)
           
