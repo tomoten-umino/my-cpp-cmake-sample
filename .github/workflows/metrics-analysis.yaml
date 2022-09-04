@@ -1,0 +1,31 @@
+name metrics-analysis
+
+on:
+  workflow_dispach:
+  pull_request:
+    types:
+      - [opened, reopened]
+    branches:
+      - 'main'
+
+jobs:
+  metrics-analysis:
+    runs-on: ubuntu:22:04
+    container:
+      image: mcr.microsoft.com/vscode/devcontainers/cpp:0-bullseye
+    
+    steps:
+      - name: update container package
+        run: |
+          apt-get update
+          apt-get -y install python3-pip cpplint
+
+      - name: checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: python package install
+        if: ${{ success() }}
+        run: |
+          pip install -r requirements.txt
