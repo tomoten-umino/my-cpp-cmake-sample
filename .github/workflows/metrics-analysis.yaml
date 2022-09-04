@@ -69,6 +69,7 @@ jobs:
         id: cat_result
         run: |
           text=`cat max_indent_error.txt`
+          text="${text//'%'/'%25'}"
           echo "::set-output name=message_body::$text"
 #          text="${text//'%'/'%25'}"
 #          text="${text//$'\n'/'%0A'}"
