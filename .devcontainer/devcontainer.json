@@ -19,7 +19,7 @@
 				"ms-vscode.cpptools",
 				"ms-vscode.cmake-tools",
 				"janisdd.vscode-edit-csv",
-				"OmarTawfik.github-actions-vscode"
+				"me-dutour-mathieu.vscode-github-actions"
 			]
 		}
 	},

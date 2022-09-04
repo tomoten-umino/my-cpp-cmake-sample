@@ -1,7 +1,7 @@
 name: metrics-analysis
 
 on:
-  workflow_dispach:
+  workflow_dispatch:
   pull_request:
     types:
       - [opened, reopened]
