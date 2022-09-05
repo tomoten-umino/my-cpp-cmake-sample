@@ -52,15 +52,17 @@ jobs:
         id: check_max_indent
         if: steps.metrics_analysis.outcome == 'success'
         run: | 
-          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:maxindent:4 | tee max_indent_error.txt 
+          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:maxindent:4 >max_indent_error.txt 
       
       - name: check max cyclomatic
+        id: check_max_cyclomatic
         if: steps.metrics_analysis.outcome == 'success' && ( success() || failure() )
         run: |
-          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10 | tee max_cyclomatic_error.txt
+          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10 >max_cyclomatic_error.txt
 
       - name: modify text result of indent
         id: result_of_indent
+        if: steps.check_max_indent.outcome == ( success() || failure() )
         run: |
           sed -i -z 's/%/%25/g' max_indent_error.txt
           sed -i -z 's/\n/%0A/g' max_indent_error.txt
@@ -68,6 +70,7 @@ jobs:
           echo "::set-output name=message_body::$text_indent"
           
       - name: report result of indent
+        if: ${{ success() }}
         uses: github-actions-up-and-running/pr-comment@v1.0.1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
@@ -75,6 +78,7 @@ jobs:
 
       - name: modify text result of cyclomatic
         id: result_of_cyclomatic
+        if: steps.check_max_cyclomatic.outcome ==  ( success() || failure() )
         run: |
           sed -i -z 's/%/%25/g' max_cyclomatic_error.txt
           sed -i -z 's/\n/%0A/g' max_cyclomatic_error.txt
@@ -82,6 +86,7 @@ jobs:
           echo "::set-output name=message_body::$text_cyclomatic"
           
       - name: report result of cyclomatic
+        if: ${{ success() }}
         uses: github-actions-up-and-running/pr-comment@v1.0.1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
