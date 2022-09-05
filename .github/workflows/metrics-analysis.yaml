@@ -59,16 +59,31 @@ jobs:
         run: |
           metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10 | tee max_cyclomatic_error.txt
 
-      - name: cat result
-        id: cat_result
+      - name: modify text result of indent
+        id: result_of_indent
         run: |
+          sed -i -z 's/%/%25/g' max_indent_error.txt
           sed -i -z 's/\n/%0A/g' max_indent_error.txt
-          text=`cat max_indent_error.txt`
-          echo "::set-output name=message_body::$text"
+          text_indent=`cat max_indent_error.txt`
+          echo "::set-output name=message_body::$text_indent"
           
-      - name: comment pr
+      - name: report result of indent
         uses: github-actions-up-and-running/pr-comment@v1.0.1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
-          message: ${{ steps.cat_result.outputs.message_body }}
-     
+          message: ${{ steps.result_of_indent.outputs.message_body }}
+
+      - name: modify text result of cyclomatic
+        id: result_of_cyclomatic
+        run: |
+          sed -i -z 's/%/%25/g' max_cyclomatic_error.txt
+          sed -i -z 's/\n/%0A/g' max_cyclomatic_error.txt
+          text_cyclomatic=`cat max_cyclomatic_error.txt`
+          echo "::set-output name=message_body::$text_cyclomatic"
+          
+      - name: report result of cyclomatic
+        uses: github-actions-up-and-running/pr-comment@v1.0.1
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          message: ${{ steps.result_of_cyclomatic.outputs.message_body }}
+   
