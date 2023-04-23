@@ -20,14 +20,15 @@ RUN if [ "${REINSTALL_CMAKE_VERSION_FROM_SOURCE}" != "none" ]; then \
 
 # [Optional] Uncomment this section to install additional packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install vim python3-pip lcov
+    && apt-get -y --no-install-recommends install vim python3-pip lcov
 
 # [User added] Install Google Test ver. 1.12.1
-Run  wget https://github.com/google/googletest/archive/release-1.12.1.tar.gz -O - | tar xzvf - \
+RUN  wget https://github.com/google/googletest/archive/release-1.12.1.tar.gz -O - | tar xzvf - \
      && mkdir -p /usr/local/src \
      && mv ./googletest-release-1.12.1 /usr/local/src/ \
      && cd /usr/local/src/googletest-release-1.12.1 \
      && mkdir ./build \
      && cd ./build \
      && cmake .. \
-     && make install
+     && make install \
+     && rm -rf /usr/local/src/googletest-release-1.12.1
