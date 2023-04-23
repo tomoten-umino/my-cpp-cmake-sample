@@ -15,5 +15,6 @@ add_custom_target(
     cpplint
     COMMAND cd ${CMAKE_CURRENT_SOURCE_DIR} &&
             ${CPP_LINT} --filter=-legal/copyright
+            --exclude=tests/*.cpp
             ${ALL_SOURCE_FILES}
 )
