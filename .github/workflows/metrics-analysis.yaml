@@ -30,6 +30,7 @@ jobs:
       - name: fetch repository
         if: ${{ success() }}
         run: |
+          git config --global --add safe.directory /__w/${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}/${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           git config --local user.name "${GITHUB_ACTOR}"
           git config --local user.email "${GITHUB_ACTOR}@users.noreply.github.com"
