@@ -5,7 +5,6 @@ on:
   workflow_dispatch:
   # for pull request check
   pull_request:
-    types: [opened, reopened]
     branches:
       - 'main'
 
