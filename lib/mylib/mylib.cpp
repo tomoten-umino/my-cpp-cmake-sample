@@ -17,4 +17,9 @@ void Mylib::nested_hello() {
     }
 }
 
+int Mylib::my_sum(int a, int b) {
+    int sum = 0;
+    sum = a + b;
+    return sum;
+}
 

@@ -22,19 +22,26 @@ This repository is a sample project of C++ program.
 
 ```shell
 my-cpp-cmake-sample
-├── CMakeLists.txt
-├── LICENSE
 ├── README.md
+├── LICENSE
+├── CMakeLists.txt
+├── requirements.txt
+├── cmake
+│   ├── cpplint.cmake
+│   └── metrixpp.cmake
 ├── examples
-│   ├── CMakeLists.txt
-│   └── main.cpp
+│   ├── CMakeLists.txt
+│   └── main.cpp
 ├── include
-│   └── mylib
-│       └── mylib.hpp
-└── lib
-    └── mylib
-        ├── CMakeLists.txt
-        └── mylib.cpp
+│   └── mylib
+│       └── mylib.hpp
+├── lib
+│   └── mylib
+│       ├── CMakeLists.txt
+│       └── mylib.cpp
+└── tests
+    ├── CMakeLists.txt
+    └── unit-test.cpp
 ```
 
 ### Setup devcontainer
@@ -68,7 +75,9 @@ make install
 # run cpplint
 make cpplint
 # run metrix++
-make metrix++
+make metrixpp
+# run test
+make run-test
 ```
 
 ### cmake options
