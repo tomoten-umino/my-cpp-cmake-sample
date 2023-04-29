@@ -81,17 +81,24 @@ jobs:
           fi
 
       # to convert % and \n to URL encodes
-      - name: modify text result of indent
-        id: result_of_indent
-        if: steps.check_max_indent.outcome == 'success'
-        run: |
-          text_indent=$(cat max_indent_error.txt)
-          text_indent="${text_indent//$'\n'/\\n}"
-          #echo "message=${text_indent}" >> $GITHUB_OUTPUT
+#      - name: modify text result of indent
+#        id: result_of_indent
+#        if: steps.check_max_indent.outcome == 'success'
+#        run: |
+#          text_indent=$(cat max_indent_error.txt)
+#          text_indent="${text_indent//$'\n'/\\n}"
+#          #echo "message=${text_indent}" >> $GITHUB_OUTPUT
         #text_indent=`cat max_indent_error.txt`
         #sed -i -z 's/%/%25/g' max_indent_error.txt
         #sed -i -z 's/\n/%0A/g' max_indent_error.txt
         #echo "::set-output name=message_body::$text_indent"
+
+      - name: text result of indent
+        uses: actions/github-script@v6
+        id: result_of_indent
+        with:
+          script: |
+            cat max_indent_error.txt
 
       # find comment for Indent
       - name: Find comment for Indent
@@ -110,7 +117,7 @@ jobs:
           comment-id: ${{ steps.fc-indent.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ${{ steps.result_of_indent.outputs.message }}
+            ${{ steps.result_of_indent.outputs }}
           edit-mode: replace
 
       # to convert % and \n to URL encodes
