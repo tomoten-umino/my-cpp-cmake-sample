@@ -85,7 +85,7 @@ jobs:
         id: result_of_indent
         if: steps.check_max_indent.outcome == 'success'
         run: |
-          cat max_indent_error.txt
+          text_indent=`cat max_indent_error.txt`
           echo "test"
           #echo "message_body=$text_indent" >> $GITHUB_OUTPUT
         #text_indent=`cat max_indent_error.txt`
