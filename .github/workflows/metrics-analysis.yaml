@@ -83,7 +83,7 @@ jobs:
       # to convert % and \n to URL encodes
       - name: modify text result of indent
         id: result_of_indent
-        if: ${{ github.event_name == 'pull_request' }}
+        if: steps.check_max_indent.outcome == 'success'
         run: |
           sed -i -z 's/%/%25/g' max_indent_error.txt
           sed -i -z 's/\n/%0A/g' max_indent_error.txt
@@ -101,7 +101,7 @@ jobs:
           body-includes: "Max Indent analysis"
 
       - name: Create or update comment for Max Indent
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }} && steps.result_of_indent.outcome == 'success'
         uses: peter-evans/create-or-update-comment@v3
         with:
           comment-id: ${{ steps.fc-indent.outputs.comment-id }}
@@ -113,7 +113,7 @@ jobs:
       # to convert % and \n to URL encodes
       - name: modify text result of cyclomatic
         id: result_of_cyclomatic
-        if: ${{ github.event_name == 'pull_request' }}
+        if: steps.check_max_cyclomatic.outcome == 'success'
         run: |
           sed -i -z 's/%/%25/g' max_cyclomatic_error.txt
           sed -i -z 's/\n/%0A/g' max_cyclomatic_error.txt
@@ -131,7 +131,7 @@ jobs:
           body-includes: "Cyclomatic Complexity analysis"
 
       - name: Create or update comment for Cyclomatic Complexity
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ github.event_name == 'pull_request' }} && steps.result_of_cyclomatic.outcome == 'success'
         uses: peter-evans/create-or-update-comment@v3
         with:
           comment-id: ${{ steps.fc-c-complexity.outputs.comment-id }}
