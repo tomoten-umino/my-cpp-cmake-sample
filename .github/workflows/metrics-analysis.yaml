@@ -86,7 +86,8 @@ jobs:
         if: steps.check_max_indent.outcome == 'success'
         run: |
           text_indent=`cat max_indent_error.txt`
-          echo "message=${text_indent//$'\n'/\\n}" >> $GITHUB_OUTPUT
+          text_indent="${text_indent//$'\n'/\\n}"
+          echo "message=${text_indent}" >> $GITHUB_OUTPUT
         #text_indent=`cat max_indent_error.txt`
         #sed -i -z 's/%/%25/g' max_indent_error.txt
         #sed -i -z 's/\n/%0A/g' max_indent_error.txt
