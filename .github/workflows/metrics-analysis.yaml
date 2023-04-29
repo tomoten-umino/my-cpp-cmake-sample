@@ -86,8 +86,7 @@ jobs:
         if: steps.check_max_indent.outcome == 'success'
         run: |
           text_indent=`cat max_indent_error.txt`
-          echo "test"
-          #echo "message_body=$text_indent" >> $GITHUB_OUTPUT
+          echo "message=${text_indent}" >> $GITHUB_OUTPUT
         #text_indent=`cat max_indent_error.txt`
         #sed -i -z 's/%/%25/g' max_indent_error.txt
         #sed -i -z 's/\n/%0A/g' max_indent_error.txt
@@ -110,7 +109,7 @@ jobs:
           comment-id: ${{ steps.fc-indent.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ${{ steps.result_of_indent.outputs.message_body }}
+            ${{ steps.result_of_indent.outputs.message }}
           edit-mode: replace
 
       # to convert % and \n to URL encodes
