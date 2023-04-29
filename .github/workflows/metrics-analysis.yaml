@@ -101,7 +101,7 @@ jobs:
           body-includes: "Max Indent analysis"
 
       - name: Create or update comment for Max Indent
-        if: ${{ github.event_name == 'pull_request' }} && ${{ steps.result_of_indent.outcome == 'success' }}
+        if: github.event_name == 'pull_request' && steps.result_of_indent.outcome == 'success'
         uses: peter-evans/create-or-update-comment@v3
         with:
           comment-id: ${{ steps.fc-indent.outputs.comment-id }}
