@@ -89,21 +89,21 @@ jobs:
           text_indent=`cat max_indent_error.txt`
           echo "::set-output name=message_body::$text_indent"
 
-      # find comment
+      # find comment for Indent
       - name: Find comment
         if: ${{ always() }}
         uses: peter-evans/find-comment@v2
-        id: fc1
+        id: fc-indent
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: 'github-actions[bot]'
           body-includes: "Max Indent analysis"
 
-      - name: Create or update comment
+      - name: Create or update comment for Max Indent
         if: ${{ always() }}
         uses: peter-evans/create-or-update-comment@v3
         with:
-          comment-id: ${{ steps.fc1.outputs.comment-id }}
+          comment-id: ${{ steps.fc-indent.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             ${{ steps.result_of_indent.outputs.message_body }}
@@ -126,11 +126,33 @@ jobs:
           text_cyclomatic=`cat max_cyclomatic_error.txt`
           echo "::set-output name=message_body::$text_cyclomatic"
 
-      # to write pull request comment
-      - name: report result of cyclomatic
+      # find comment for Cyclomatic Complexity
+      - name: Find comment
         if: ${{ always() }}
-        uses: github-actions-up-and-running/pr-comment@v1.0.1
+        uses: peter-evans/find-comment@v2
+        id: fc-c-complexity
         with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          message: ${{ steps.result_of_cyclomatic.outputs.message_body }}
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: "Cyclomatic Complexity analysis"
+
+      - name: Create or update comment for Cyclomatic Complexity
+        if: ${{ always() }}
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          comment-id: ${{ steps.fc-c-complexity.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            ${{ steps.result_of_cyclomatic.outputs.message_body }}
+          edit-mode: replace
+
+
+
+#      # to write pull request comment
+#      - name: report result of cyclomatic
+#        if: ${{ always() }}
+#        uses: github-actions-up-and-running/pr-comment@v1.0.1
+#        with:
+#          repo-token: ${{ secrets.GITHUB_TOKEN }}
+#          message: ${{ steps.result_of_cyclomatic.outputs.message_body }}
    
