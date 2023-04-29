@@ -53,14 +53,14 @@ jobs:
           $(git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }} --name-only)
 
       - name: create comment header
-        if: ${{ success() }} && ${{ github.event_name == 'pull_request' }}
+        if: steps.metrics_analysis.outcome == 'success'
         run: |
           echo "# Result of Max Indent analysis" >max_indent_error.txt
           echo "# Result of Cyclomatic Complexity analysis" >max_cyclomatic_error.txt
 
       - name: check max indent
         id: check_max_indent
-        if: steps.metrics_analysis.outcome == 'success' && ${{ github.event_name == 'pull_request' }}
+        if: steps.metrics_analysis.outcome == 'success'
         run: | 
           # if all C/C++ files are not changed, count = 0
           if [ $(sqlite3 ./metrixpp.db 'SELECT COUNT(*) FROM "std.code.lines"') != "0" ]; then
@@ -71,7 +71,7 @@ jobs:
       
       - name: check max cyclomatic
         id: check_max_cyclomatic
-        if: steps.metrics_analysis.outcome == 'success' && ( success() || failure() ) ${{ github.event_name == 'pull_request' }}
+        if: steps.metrics_analysis.outcome == 'success' && ( success() || failure() )
         run: |
           # if all C/C++ files are not changed, count = 0
           if [ $(sqlite3 ./metrixpp.db 'SELECT COUNT(*) FROM "std.code.complexity"') != "0" ]; then
