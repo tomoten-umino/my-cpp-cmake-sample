@@ -61,13 +61,21 @@ jobs:
         id: check_max_indent
         if: steps.metrics_analysis.outcome == 'success'
         run: | 
-          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:maxindent:4 >>max_indent_error.txt 
+          if [ -e metrixpp.db ]; then
+            metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:maxindent:4 >>max_indent_error.txt
+          else
+            echo "All C/C++ code are not changed" >>max_indent_error.txt
+          fi
       
       - name: check max cyclomatic
         id: check_max_cyclomatic
         if: steps.metrics_analysis.outcome == 'success' && ( success() || failure() )
         run: |
-          metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10 >>max_cyclomatic_error.txt
+          if [ -e metrixpp.db ]; then
+            metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10 >>max_cyclomatic_error.txt
+          else
+            echo "All C/C++ code are not changed" >>max_cyclomatic_error.txt
+          fi
 
       # to convert % and \n to URL encodes
       - name: modify text result of indent
