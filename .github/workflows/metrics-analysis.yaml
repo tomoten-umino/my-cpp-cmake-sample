@@ -41,7 +41,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: metrics analysis
-        if: $github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request'
         id: metrics_analysis
         run: |
           metrix++ collect --log-level=INFO \
