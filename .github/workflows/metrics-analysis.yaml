@@ -65,7 +65,7 @@ jobs:
           if [ $(sqlite3 ./metrixpp.db 'SELECT COUNT(*) FROM "std.code.lines"') != "0" ]; then
             metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:maxindent:4 >>max_indent_error.txt
           else
-            echo "All C/C++ files are not changed" >>max_indent_error.txt
+            echo "All C/C++ files are not changed." >>max_indent_error.txt
           fi
       
       - name: check max cyclomatic
@@ -76,7 +76,7 @@ jobs:
           if [ $(sqlite3 ./metrixpp.db 'SELECT COUNT(*) FROM "std.code.complexity"') != "0" ]; then
             metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:cyclomatic:10 >>max_cyclomatic_error.txt
           else
-            echo "All C/C++ files are not changed" >>max_cyclomatic_error.txt
+            echo "All C/C++ files are not changed." >>max_cyclomatic_error.txt
           fi
 
       # to convert % and \n to URL encodes
