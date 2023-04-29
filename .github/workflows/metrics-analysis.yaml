@@ -62,7 +62,7 @@ jobs:
         if: steps.metrics_analysis.outcome == 'success'
         run: | 
           sqlite3 ./metrixpp.db '.tables'
-          sqlite3 ./metrixpp.db 'SELECT * FROM "std.code.lines"'
+          sqlite3 ./metrixpp.db 'SELECT COUNT(*) FROM "std.code.lines"'
           metrix++ limit --log-level=WARNING --db-file=metrixpp.db --max-limit=std.code.complexity:maxindent:4 >>max_indent_error.txt
       
       - name: check max cyclomatic
