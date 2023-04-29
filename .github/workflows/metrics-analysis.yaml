@@ -90,7 +90,7 @@ jobs:
           echo "::set-output name=message_body::$text_indent"
 
       # find comment for Indent
-      - name: Find comment
+      - name: Find comment for Indent
         if: ${{ always() }}
         uses: peter-evans/find-comment@v2
         id: fc-indent
@@ -109,14 +109,7 @@ jobs:
             ${{ steps.result_of_indent.outputs.message_body }}
           edit-mode: replace
 
-#      # to write pull request comment
-#      - name: report result of indent
-#        if: ${{ always() }}
-#        uses: github-actions-up-and-running/pr-comment@v1.0.1
-#        with:
-#          repo-token: ${{ secrets.GITHUB_TOKEN }}
-#          message: ${{ steps.result_of_indent.outputs.message_body }}
-
+      # to convert % and \n to URL encodes
       - name: modify text result of cyclomatic
         id: result_of_cyclomatic
         if: ${{ always() }}
@@ -127,7 +120,7 @@ jobs:
           echo "::set-output name=message_body::$text_cyclomatic"
 
       # find comment for Cyclomatic Complexity
-      - name: Find comment
+      - name: Find comment for Cyclomatic Complexity
         if: ${{ always() }}
         uses: peter-evans/find-comment@v2
         id: fc-c-complexity
@@ -145,14 +138,4 @@ jobs:
           body: |
             ${{ steps.result_of_cyclomatic.outputs.message_body }}
           edit-mode: replace
-
-
-
-#      # to write pull request comment
-#      - name: report result of cyclomatic
-#        if: ${{ always() }}
-#        uses: github-actions-up-and-running/pr-comment@v1.0.1
-#        with:
-#          repo-token: ${{ secrets.GITHUB_TOKEN }}
-#          message: ${{ steps.result_of_cyclomatic.outputs.message_body }}
-   
+  
