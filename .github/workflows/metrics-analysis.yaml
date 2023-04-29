@@ -88,7 +88,8 @@ jobs:
           sed -i -z 's/%/%25/g' max_indent_error.txt
           sed -i -z 's/\n/%0A/g' max_indent_error.txt
           text_indent=`cat max_indent_error.txt`
-          echo "::set-output name=message_body::$text_indent"
+          #echo "::set-output name=message_body::$text_indent"
+          echo "MSG_BODY_OF_INDENT=$text_indent" >> $GITHUB_ENV
 
       # find comment for Indent
       - name: Find comment for Indent
@@ -107,8 +108,9 @@ jobs:
           comment-id: ${{ steps.fc-indent.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ${{ steps.result_of_indent.outputs.message_body }}
+            ${{ env.MSG_BODY_OF_INDENT }}
           edit-mode: replace
+#            ${{ steps.result_of_indent.outputs.message_body }}
 
       # to convert % and \n to URL encodes
       - name: modify text result of cyclomatic
