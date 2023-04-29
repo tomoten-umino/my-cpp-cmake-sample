@@ -27,7 +27,7 @@ jobs:
 
       # to diff between from_branch and to_branch
       - name: fetch repository
-        if: ${{ success() }}
+        if: success()
         run: |
           git config --global --add safe.directory /__w/${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}/${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
@@ -36,12 +36,12 @@ jobs:
           git fetch
 
       - name: python package install
-        if: ${{ success() }}
+        if: $success()
         run: |
           pip install -r requirements.txt
 
       - name: metrics analysis
-        if: ${{ github.event_name == 'pull_request' }}
+        if: $github.event_name == 'pull_request'
         id: metrics_analysis
         run: |
           metrix++ collect --log-level=INFO \
@@ -92,7 +92,7 @@ jobs:
 
       # find comment for Indent
       - name: Find comment for Indent
-        if: ${{ github.event_name == 'pull_request' }}
+        if: github.event_name == 'pull_request'
         uses: peter-evans/find-comment@v2
         id: fc-indent
         with:
@@ -122,7 +122,7 @@ jobs:
 
       # find comment for Cyclomatic Complexity
       - name: Find comment for Cyclomatic Complexity
-        if: ${{ github.event_name == 'pull_request' }}
+        if: github.event_name == 'pull_request'
         uses: peter-evans/find-comment@v2
         id: fc-c-complexity
         with:
@@ -131,7 +131,7 @@ jobs:
           body-includes: "Cyclomatic Complexity analysis"
 
       - name: Create or update comment for Cyclomatic Complexity
-        if: ${{ github.event_name == 'pull_request' }} && steps.result_of_cyclomatic.outcome == 'success'
+        if: github.event_name == 'pull_request' && steps.result_of_cyclomatic.outcome == 'success'
         uses: peter-evans/create-or-update-comment@v3
         with:
           comment-id: ${{ steps.fc-c-complexity.outputs.comment-id }}
