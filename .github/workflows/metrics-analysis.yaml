@@ -52,6 +52,17 @@ jobs:
           --db-file=metrixpp.db \
           $(git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }} --name-only)
 
+      - name: metrics analysis all
+        if: github.event_name != 'pull_request'
+        id: metrics_analysis
+        run: |
+          metrix++ collect --log-level=INFO \
+          --std.code.lines.code \
+          --std.code.complexity.maxindent \
+          --std.code.complexity.cyclomatic \
+          --exclude-files=CMakeCXXCompilerId.cpp \
+          --db-file=metrixpp.db
+
       - name: create comment header
         if: steps.metrics_analysis.outcome == 'success'
         run: |
