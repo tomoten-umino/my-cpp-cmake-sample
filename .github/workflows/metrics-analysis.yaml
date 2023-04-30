@@ -119,7 +119,7 @@ jobs:
           comment-id: ${{ steps.fc-indent.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ${{ steps.result_of_indent.outputs.message }}
+            ${{ steps.result_of_indent.outputs.message_body }}
           edit-mode: replace
 
       # to convert % and \n to URL encodes
