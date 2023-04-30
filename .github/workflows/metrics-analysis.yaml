@@ -99,39 +99,39 @@ jobs:
           text_indent=$(cat max_indent_error.txt)
           echo "$text_indent" >> $GITHUB_STEP_SUMMARY
 
-      # to write PR comment
-      - name: result of indent
-        id: result_of_indent
-        if: github.event_name == 'pull_request' && steps.check_max_indent.outcome == 'success'
-        run: |
-          text_indent=$(cat max_indent_error.txt)
-          echo "message_body<<EOF" >> $GITHUB_OUTPUT
-          echo "$text_indent" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+#      # to write PR comment
+#      - name: result of indent
+#        id: result_of_indent
+#        if: github.event_name == 'pull_request' && steps.check_max_indent.outcome == 'success'
+#        run: |
+#          text_indent=$(cat max_indent_error.txt)
+#          echo "message_body<<EOF" >> $GITHUB_OUTPUT
+#          echo "$text_indent" >> $GITHUB_OUTPUT
+#          echo "EOF" >> $GITHUB_OUTPUT
 
-      # find comment for Indent
-      - name: Find comment for Indent
-        if: github.event_name == 'pull_request'
-        uses: peter-evans/find-comment@v2
-        id: fc-indent
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: "Max Indent analysis"
+#      # find comment for Indent
+#      - name: Find comment for Indent
+#        if: github.event_name == 'pull_request'
+#        uses: peter-evans/find-comment@v2
+#        id: fc-indent
+#        with:
+#          issue-number: ${{ github.event.pull_request.number }}
+#          comment-author: 'github-actions[bot]'
+#          body-includes: "Max Indent analysis"
 
-      - name: Create or update comment for Max Indent
-        if: github.event_name == 'pull_request' && steps.result_of_indent.outcome == 'success'
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          comment-id: ${{ steps.fc-indent.outputs.comment-id }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            ${{ steps.result_of_indent.outputs.message_body }}
-          edit-mode: replace
+#      - name: Create or update comment for Max Indent
+#        if: github.event_name == 'pull_request' && steps.result_of_indent.outcome == 'success'
+#        uses: peter-evans/create-or-update-comment@v3
+#        with:
+#          comment-id: ${{ steps.fc-indent.outputs.comment-id }}
+#          issue-number: ${{ github.event.pull_request.number }}
+#          body: |
+#            ${{ steps.result_of_indent.outputs.message_body }}
+#          edit-mode: replace
 
       # to write summery
       - name: summarize result of cyclomatic
-        id: result_of_indent_summaryu
+        id: result_of_indent_summary
         if: steps.check_max_cyclomatic.outcome == 'success'
         run: |
           text_indent=$(cat max_cyclomatic_error.txt)
@@ -166,4 +166,35 @@ jobs:
           body: |
             ${{ steps.result_of_cyclomatic.outputs.message_body }}
           edit-mode: replace
-  
+
+      # find comment for Indent
+      - name: Find comment for Summary
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/find-comment@v2
+        id: fc-summary
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: "Metrics analysis result"
+
+      - name: Create or update comment for Metrics analysis
+        if: github.event_name == 'pull_request' && steps.check_max_indent.outcome == 'success' && steps.check_max_cyclomatic.outcome == 'success'
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          comment-id: ${{ steps.fc-indent.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Metrics Analysis Result: passed :heavy_check_mark:
+            -> [go to result](https://github.com/tomoten-umino/my-cpp-cmake-sample/actions/runs/${{ github.run_id }})
+          edit-mode: replace
+
+      - name: Create or update comment for Metrics analysis
+        if: github.event_name == 'pull_request' && ( steps.check_max_indent.outcome == 'failure' || steps.check_max_cyclomatic.outcome == 'failure' )
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          comment-id: ${{ steps.fc-indent.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            Metrics Analysis Result: failed :heavy_multiplication_x:
+            -> [go to result](https://github.com/tomoten-umino/my-cpp-cmake-sample/actions/runs/${{ github.run_id }})
+          edit-mode: replace
