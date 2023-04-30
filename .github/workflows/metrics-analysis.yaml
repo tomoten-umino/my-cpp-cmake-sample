@@ -89,18 +89,6 @@ jobs:
           echo "message_body<<EOF" >> $GITHUB_OUTPUT
           echo "$text_indent" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
-#          #echo "message=${text_indent}" >> $GITHUB_OUTPUT
-        #text_indent=`cat max_indent_error.txt`
-        #sed -i -z 's/%/%25/g' max_indent_error.txt
-        #sed -i -z 's/\n/%0A/g' max_indent_error.txt
-        #echo "::set-output name=message_body::$text_indent"
-
-#      - name: text result of indent
-#        uses: actions/github-script@v6
-#        id: result_of_indent
-#        with:
-#          script: |
-#            cat max_indent_error.txt
 
       # find comment for Indent
       - name: Find comment for Indent
@@ -127,10 +115,10 @@ jobs:
         id: result_of_cyclomatic
         if: steps.check_max_cyclomatic.outcome == 'success'
         run: |
-          sed -i -z 's/%/%25/g' max_cyclomatic_error.txt
-          sed -i -z 's/\n/%0A/g' max_cyclomatic_error.txt
-          text_cyclomatic=`cat max_cyclomatic_error.txt`
-          echo "::set-output name=message_body::$text_cyclomatic"
+          text_cyclomatic=$(cat max_cyclomatic_error.txt)
+          echo "message_body<<EOF" >> $GITHUB_OUTPUT
+          echo "$text_cyclomatic" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       # find comment for Cyclomatic Complexity
       - name: Find comment for Cyclomatic Complexity
