@@ -70,4 +70,5 @@ jobs:
         run: |
           pwd
           ls
+          chmod 755 unit-test
           ./unit-test
