@@ -94,7 +94,7 @@ jobs:
       # to convert % and \n to URL encodes
       - name: result of indent not PR
         id: result_of_indent_notPR
-        if: github.event_name != 'pull_request' && steps.result_of_indent.outcome == 'success'
+        if: github.event_name != 'pull_request' && steps.check_max_indent.outcome == 'success'
         run: |
           text_indent=$(cat max_indent_error.txt)
           echo "message_body<<EOF" >> $GITHUB_STEP_SUMMARY
@@ -104,7 +104,7 @@ jobs:
       # to convert % and \n to URL encodes
       - name: modify text result of indent
         id: result_of_indent
-        if: steps.check_max_indent.outcome == 'success'
+        if: github.event_name == 'pull_request' && steps.check_max_indent.outcome == 'success'
         run: |
           text_indent=$(cat max_indent_error.txt)
           echo "message_body<<EOF" >> $GITHUB_OUTPUT
