@@ -27,7 +27,7 @@ jobs:
 
       # to diff between from_branch and to_branch
       - name: fetch repository
-        if: ${{ success() }}
+        if: success()
         run: |
           git config --global --add safe.directory /__w/${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}/${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}
           git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
@@ -36,11 +36,13 @@ jobs:
           git fetch
 
       - name: python package install
-        if: ${{ success() }}
+        if: success()
         run: |
           pip install -r requirements.txt
 
+      # metrics analysis for PR diff
       - name: metrics analysis
+        if: github.event_name == 'pull_request'
         id: metrics_analysis
         run: |
           metrix++ collect --log-level=INFO \
@@ -51,15 +53,27 @@ jobs:
           --db-file=metrixpp.db \
           $(git diff ${{ github.head_ref }} remotes/origin/${{ github.base_ref }} --name-only)
 
+      # metrics analysis for workflow dispatch
+      - name: metrics analysis all
+        if: github.event_name != 'pull_request'
+        id: metrics_analysis_all
+        run: |
+          metrix++ collect --log-level=INFO \
+          --std.code.lines.code \
+          --std.code.complexity.maxindent \
+          --std.code.complexity.cyclomatic \
+          --exclude-files=CMakeCXXCompilerId.cpp \
+          --db-file=metrixpp.db
+
       - name: create comment header
-        if: ${{ success() }}
+        if: steps.metrics_analysis.outcome == 'success' || steps.metrics_analysis_all.outcome == 'success'
         run: |
           echo "# Result of Max Indent analysis" >max_indent_error.txt
           echo "# Result of Cyclomatic Complexity analysis" >max_cyclomatic_error.txt
 
       - name: check max indent
         id: check_max_indent
-        if: steps.metrics_analysis.outcome == 'success'
+        if: steps.metrics_analysis.outcome == 'success'  || steps.metrics_analysis_all.outcome == 'success'
         run: | 
           # if all C/C++ files are not changed, count = 0
           if [ $(sqlite3 ./metrixpp.db 'SELECT COUNT(*) FROM "std.code.lines"') != "0" ]; then
@@ -70,7 +84,7 @@ jobs:
       
       - name: check max cyclomatic
         id: check_max_cyclomatic
-        if: steps.metrics_analysis.outcome == 'success' && ( success() || failure() )
+        if: ( steps.metrics_analysis.outcome == 'success'  || steps.metrics_analysis_all.outcome == 'success' ) && ( success() || failure() )
         run: |
           # if all C/C++ files are not changed, count = 0
           if [ $(sqlite3 ./metrixpp.db 'SELECT COUNT(*) FROM "std.code.complexity"') != "0" ]; then
@@ -79,63 +93,50 @@ jobs:
             echo "All C/C++ files are not changed." >>max_cyclomatic_error.txt
           fi
 
-      # to convert % and \n to URL encodes
-      - name: modify text result of indent
-        id: result_of_indent
-        if: ${{ always() }}
+      # to write summery
+      - name: summarize result of indent
+        id: result_of_indent_summary
+        if: steps.check_max_indent.outcome == 'success'
         run: |
-          sed -i -z 's/%/%25/g' max_indent_error.txt
-          sed -i -z 's/\n/%0A/g' max_indent_error.txt
-          text_indent=`cat max_indent_error.txt`
-          echo "::set-output name=message_body::$text_indent"
+          text_indent=$(cat max_indent_error.txt)
+          echo "$text_indent" >> $GITHUB_STEP_SUMMARY
 
-      # find comment for Indent
-      - name: Find comment for Indent
-        if: ${{ always() }}
+      # to write summery
+      - name: summarize result of cyclomatic
+        id: result_of_cyclomatic_all
+        if: steps.check_max_cyclomatic.outcome == 'success'
+        run: |
+          text_indent=$(cat max_cyclomatic_error.txt)
+          echo "$text_indent" >> $GITHUB_STEP_SUMMARY
+
+      # find comment for Merics result summary
+      - name: Find comment for Summary
+        if: github.event_name == 'pull_request'
         uses: peter-evans/find-comment@v2
-        id: fc-indent
+        id: fc-summary
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: 'github-actions[bot]'
-          body-includes: "Max Indent analysis"
+          body-includes: "Metrics analysis result"
 
-      - name: Create or update comment for Max Indent
-        if: ${{ always() }}
+      - name: Create or update comment for Metrics analysis
+        if: github.event_name == 'pull_request' && steps.check_max_indent.outcome == 'success' && steps.check_max_cyclomatic.outcome == 'success'
         uses: peter-evans/create-or-update-comment@v3
         with:
           comment-id: ${{ steps.fc-indent.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ${{ steps.result_of_indent.outputs.message_body }}
+            Metrics Analysis Result: passed :heavy_check_mark:
+            -> [go to result](https://github.com/tomoten-umino/my-cpp-cmake-sample/actions/runs/${{ github.run_id }})
           edit-mode: replace
 
-      # to convert % and \n to URL encodes
-      - name: modify text result of cyclomatic
-        id: result_of_cyclomatic
-        if: ${{ always() }}
-        run: |
-          sed -i -z 's/%/%25/g' max_cyclomatic_error.txt
-          sed -i -z 's/\n/%0A/g' max_cyclomatic_error.txt
-          text_cyclomatic=`cat max_cyclomatic_error.txt`
-          echo "::set-output name=message_body::$text_cyclomatic"
-
-      # find comment for Cyclomatic Complexity
-      - name: Find comment for Cyclomatic Complexity
-        if: ${{ always() }}
-        uses: peter-evans/find-comment@v2
-        id: fc-c-complexity
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: "Cyclomatic Complexity analysis"
-
-      - name: Create or update comment for Cyclomatic Complexity
-        if: ${{ always() }}
+      - name: Create or update comment for Metrics analysis
+        if: github.event_name == 'pull_request' && ( steps.check_max_indent.outcome == 'failure' || steps.check_max_cyclomatic.outcome == 'failure' )
         uses: peter-evans/create-or-update-comment@v3
         with:
-          comment-id: ${{ steps.fc-c-complexity.outputs.comment-id }}
+          comment-id: ${{ steps.fc-indent.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ${{ steps.result_of_cyclomatic.outputs.message_body }}
+            Metrics Analysis Result: failed :heavy_multiplication_x:
+            -> [go to result](https://github.com/tomoten-umino/my-cpp-cmake-sample/actions/runs/${{ github.run_id }})
           edit-mode: replace
-  
