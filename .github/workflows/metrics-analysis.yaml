@@ -131,7 +131,7 @@ jobs:
 
       # to write summery
       - name: summarize result of cyclomatic
-        id: result_of_indent_summary
+        id: result_of_cyclomatic
         if: steps.check_max_cyclomatic.outcome == 'success'
         run: |
           text_indent=$(cat max_cyclomatic_error.txt)
