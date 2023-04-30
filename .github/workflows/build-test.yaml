@@ -72,3 +72,4 @@ jobs:
           chmod 755 unit-test
           ./unit-test
           ls
+          find . -name "*.gcda"
