@@ -77,6 +77,7 @@ jobs:
           find . -name "*.gc*"
           # get coverage rate
           coverate_rate=""
+          gcov -n ./build/tests/CMakeFiles/unit-test.dir/__/lib/mylib/mylib.cpp.gcda
           gcov -n ./build/tests/CMakeFiles/unit-test.dir/__/lib/mylib/mylib.cpp.gcda |
           while read -r FILE; read -r LINE || [[ -n "${LINE}" ]];
           do
