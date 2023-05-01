@@ -81,6 +81,8 @@ jobs:
           gcov -n ./build/tests/CMakeFiles/unit-test.dir/__/lib/mylib/mylib.cpp.gcda |
           while read -r FILE; read -r LINE;
           do
+            echo "${FILE}"
+            echo "${LINE}"
             if echo "${FILE}" | grep "mylib" >/dev/null; then
               coverate_rate=$(echo "${LINE}" | sed -n 's/Lines executed://p' | sed -n 's/%.*//p')
             fi
