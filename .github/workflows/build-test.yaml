@@ -39,7 +39,7 @@ jobs:
           mkdir build; cd build
           cmake ..
           make all
-          cd ..; tar czvf build.tar.gz
+          cd ..; tar czvf build.tar.gz build
 
       - name: upload test binary
         uses: actions/upload-artifact@v3
