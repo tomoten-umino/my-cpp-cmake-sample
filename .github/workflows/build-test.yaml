@@ -76,7 +76,6 @@ jobs:
           build/tests/unit-test
           find . -name "*.gc*"
           # get coverage rate
-          coverate_rate=""
           #gcov -n ./build/tests/CMakeFiles/unit-test.dir/__/lib/mylib/mylib.cpp.gcda
           gcov -n ./build/tests/CMakeFiles/unit-test.dir/__/lib/mylib/mylib.cpp.gcda |
           while read -r FILE; read -r LINE;
@@ -84,8 +83,8 @@ jobs:
             echo "${FILE}"
             echo "${LINE}"
             if echo "${FILE}" | grep "mylib" >/dev/null; then
-              coverate_rate=$(echo "${LINE}" | sed -n 's/Lines executed://p' | sed -n 's/%.*//p')
+              echo "${LINE}" | sed -n 's/Lines executed://p' | sed -n 's/%.*//p' >tmp
             fi
           done
-          echo "$coverate_rate"
-          echo "$coverate_rate" >> $GITHUB_STEP_SUMMARY
+          cat tmp
+          cat tmp >> $GITHUB_STEP_SUMMARY
