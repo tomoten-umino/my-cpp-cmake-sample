@@ -39,12 +39,13 @@ jobs:
           mkdir build; cd build
           cmake ..
           make all
+          cd ..; tar czvf build.tar.gz
 
       - name: upload test binary
         uses: actions/upload-artifact@v3
         with:
           name: test-driver
-          path: build/tests/unit-test
+          path: build.tar.gz
           retention-days: 1
 
   unit-test:
@@ -69,9 +70,10 @@ jobs:
       - name: run unit-test
         run: |
           pwd
-          chmod 755 unit-test
+          tar xzvf build.tar.gz
+          chmod 755 build/tests/unit-test
           # run unit-test
-          ./unit-test
+          build/tests/unit-test
           find . -name "*.gc*"
           # get coverage rate
           coverate_rate=""
