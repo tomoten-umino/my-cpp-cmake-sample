@@ -72,6 +72,7 @@ jobs:
           chmod 755 unit-test
           # run unit-test
           ./unit-test
+          find . -name "*.gc*"
           # get coverage rate
           coverate_rate=""
           gcov -n ./build/tests/CMakeFiles/unit-test.dir/__/lib/mylib/mylib.cpp.gcda |
