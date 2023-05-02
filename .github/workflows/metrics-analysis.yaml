@@ -117,7 +117,7 @@ jobs:
         with:
           issue-number: ${{ github.event.pull_request.number }}
           comment-author: 'github-actions[bot]'
-          body-includes: "Metrics"
+          body-includes: "Metrics Analysis Result"
 
       - name: Create or update comment for Metrics analysis
         if: github.event_name == 'pull_request' && steps.check_max_indent.outcome == 'success' && steps.check_max_cyclomatic.outcome == 'success'

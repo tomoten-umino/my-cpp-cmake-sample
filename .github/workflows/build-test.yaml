@@ -72,7 +72,7 @@ jobs:
 
       - name: run unit-test
         run: |
-          tar xzvf build.tar.gz
+          tar xzf build.tar.gz
           chmod 755 build/tests/unit-test
           # run unit-test
           build/tests/unit-test
