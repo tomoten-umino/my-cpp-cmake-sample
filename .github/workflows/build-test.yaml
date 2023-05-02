@@ -69,12 +69,10 @@ jobs:
 
       - name: run unit-test
         run: |
-          pwd
           tar xzvf build.tar.gz
           chmod 755 build/tests/unit-test
           # run unit-test
           build/tests/unit-test
-          find . -name "*.gc*"
           # get coverage rate
           #gcov -n ./build/tests/CMakeFiles/unit-test.dir/__/lib/mylib/mylib.cpp.gcda
           gcov -n ./build/tests/CMakeFiles/unit-test.dir/__/lib/mylib/mylib.cpp.gcda |
@@ -92,9 +90,12 @@ jobs:
       - name: Create Coverage Badge
         uses: schneegans/dynamic-badges-action@v1.3.0
         with:
-          auth: ${{ secrets.MY_GIST_TOKEN }} # 名前は適宜変更:手順5で決めたトークン名
-          gistID: 6f275fbd0ca79af67c1d90f9ba524212 #先ほど控えたGist ID
+          auth: ${{ secrets.MY_GIST_TOKEN }}
+          gistID: 6f275fbd0ca79af67c1d90f9ba524212
           filename: my-coverage.json
           label: Coverage
           message: ${{ env.COVERAGE }}
-          color: orange
+          namedLogo: github
+          valColorRange: ${{ env.COVERAGE }}
+          maxColorRange: 100
+          minColorRange: 0
