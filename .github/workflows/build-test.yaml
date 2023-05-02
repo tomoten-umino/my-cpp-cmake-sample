@@ -90,7 +90,7 @@ jobs:
         run: |
           str=$(cat <<EOS
           # Unit Test Coverage
-          https://img.shields.io/badge/Coverage-${COVERAGE}-green?style=flat&logo=github
+          Coverage = ${COVERAGE}%
           EOS
           )
           echo "$str" >> $GITHUB_STEP_SUMMARY
