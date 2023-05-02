@@ -87,7 +87,7 @@ jobs:
           cat tmp >> $GITHUB_STEP_SUMMARY
           echo "COVERAGE=$(cat tmp)" >> $GITHUB_ENV
 
-      - name: Create Coverage Badge
+      - name: create coverage badge
         uses: schneegans/dynamic-badges-action@v1.3.0
         with:
           auth: ${{ secrets.MY_GIST_TOKEN }}
