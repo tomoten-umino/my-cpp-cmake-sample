@@ -86,5 +86,15 @@ jobs:
               echo "${LINE}" | sed -n 's/Lines executed://p' | sed -n 's/%.*//p' >tmp
             fi
           done
-          cat tmp
           cat tmp >> $GITHUB_STEP_SUMMARY
+          echo "COVERAGE=$(cat tmp)" >> $GITHUB_ENV
+
+      - name: Create Coverage Badge
+        uses: schneegans/dynamic-badges-action@v1.3.0
+        with:
+          auth: ${{ secrets.MY_GIST_TOKEN }} # 名前は適宜変更:手順5で決めたトークン名
+          gistID: 6f275fbd0ca79af67c1d90f9ba524212 #先ほど控えたGist ID
+          filename: my-coverage.json
+          label: Coverage
+          message: ${{ env.COVERAGE }}
+          color: orange
