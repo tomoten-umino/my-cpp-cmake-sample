@@ -1,5 +1,10 @@
 # my-cpp-cmake-sample
 
+![example](https://github.com/tomoten-umino/my-cpp-cmake-sample/actions/workflows/metrics-analysis.yaml/badge.svg?branch=main)
+[![build-test](https://github.com/tomoten-umino/my-cpp-cmake-sample/actions/workflows/build-test.yaml/badge.svg)](https://github.com/tomoten-umino/my-cpp-cmake-sample/actions/workflows/build-test.yaml)
+[![Coverage](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/tomoten-umino/6f275fbd0ca79af67c1d90f9ba524212/raw/my-coverage.json)](https://github.com/tomoten-umino/my-cpp-cmake-sample/actions/workflows/build-test.yaml)
+
+
 This repository is a sample project of C++ program.
 
 ## Reference
